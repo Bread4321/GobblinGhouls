@@ -5,10 +5,7 @@ using UnityEngine;
 public class Camera : MonoBehaviour
 {
     public float sensX;
-    public float sensY;
-    public Transform orientation;
     float xRotation;
-    float yRotation;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,9 +19,9 @@ public class Camera : MonoBehaviour
         
         float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
 
-        yRotation += mouseX;
+        xRotation += mouseX;
 
-        transform.rotation = Quaternion.Euler(0, yRotation, 0);
+        transform.rotation = Quaternion.Euler(0, xRotation, 0);
 
     }
 }
