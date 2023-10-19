@@ -279,7 +279,7 @@ GameObject:
   m_Component:
   - component: {fileID: 217834349378416114}
   - component: {fileID: 328585006541516298}
-  - component: {fileID: 328585006541516297}
+  - component: {fileID: 4460682676747962309}
   m_Layer: 0
   m_Name: Turkey
   m_TagString: Untagged
@@ -318,7 +318,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sensX: 200
---- !u!114 &328585006541516297
+--- !u!114 &4460682676747962309
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -327,10 +327,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 598476837812991816}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2380b7fdd3f83348a0347e287d6ec29, type: 3}
+  m_Script: {fileID: 11500000, guid: b79f11d5a50e7c347a9e688f04f8545b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 1
   timeDelay: 1
   numProjectiles: 1
   Weapon: {fileID: 7131231566276197936, guid: 1ee20d76f8a02634db46cbf7b5b762b2, type: 3}
@@ -375,7 +375,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7176955542603032144}
-  m_Mesh: {fileID: -6499088691894843195, guid: 54523df11b9d2274491f33235a2db9b6, type: 3}
+  m_Mesh: {fileID: -6499088691894843195, guid: 3ebe463e0628ee34192e1d39958c3476, type: 3}
 --- !u!23 &5126001749374924201
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -396,7 +396,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -5783358108765012120, guid: 54523df11b9d2274491f33235a2db9b6, type: 3}
+  - {fileID: -5783358108765012120, guid: 3ebe463e0628ee34192e1d39958c3476, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
