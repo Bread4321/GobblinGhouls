@@ -12,12 +12,65 @@ public class SkeletonAI : MonoBehaviour
     void Start()
     {
         player = GameObject.FindWithTag("Player");
+        enemy.SetDestination(player.transform.position);
     }
 
     // Update is called once per frame
     void Update()
     {
-        enemy.SetDestination(player.transform.position);
+        
+        timer += Time.deltaTime;
+
+        int randomBehaviour = 0;
+
+        float distanceFromPlayer = Vector3.Distance(this.transform.position, player.transform.position);
+
+        if (timer >= 3)
+        {
+            randomBehaviour = (int)Random.Range(1f, 7f);
+            timer = 0;
+        }
+
+        if (distanceFromPlayer < 2.0f && timer > 4f)
+        {
+            Debug.Log("attacks");
+        }
+
+        if (randomBehaviour == 1)
+        {
+            //Debug.Log("behaviour left move");
+            enemy.SetDestination(new Vector3(enemy.transform.position.x - 3.0f, enemy.transform.position.y, transform.position.z));
+        }
+        else if (randomBehaviour == 2) 
+        {
+            //Debug.Log("behaviour right move");
+            enemy.SetDestination(new Vector3(enemy.transform.position.x + 3.0f, enemy.transform.position.y, transform.position.z));
+        }
+        else if (randomBehaviour == 3) 
+        {
+            //Debug.Log("behaviour left back move");
+            enemy.SetDestination(new Vector3(enemy.transform.position.x - 3.0f, enemy.transform.position.y, transform.position.z + 3.0f));
+        }
+        else if (randomBehaviour == 4) 
+        {
+            //Debug.Log("behaviour right back move");
+            enemy.SetDestination(new Vector3(enemy.transform.position.x + 3.0f, enemy.transform.position.y, transform.position.z + 3.0f));
+        }
+        else if (randomBehaviour == 5)
+        {
+            //Debug.Log("behaviour left forward move");
+            enemy.SetDestination(new Vector3(enemy.transform.position.x - 3.0f, enemy.transform.position.y, transform.position.z - 3.0f));
+        }
+        else if (randomBehaviour == 6)
+        {
+            //Debug.Log("behaviour right forward move");
+            enemy.SetDestination(new Vector3(enemy.transform.position.x + 3.0f, enemy.transform.position.y, transform.position.z - 3.0f));
+        }
+        if (timer > 1)
+        {
+            enemy.SetDestination(player.transform.position);
+        }
+        
         // note for later, create a nav mesh in the other tester and in the thingy that we use at school I think, you go to window and then AI then select navigation then bake
     }
 }
