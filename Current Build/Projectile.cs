@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile: MonoBehaviour
 {
     public float speed;
     public float damage = 0;
     private float timer = 0;
+    public float destroyDelay = 0f;
+    public bool destroyOnHit = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,10 +21,20 @@ public class Projectile : MonoBehaviour
 
         timer += Time.deltaTime;
         transform.Translate(Vector3.forward * Time.deltaTime * speed);
-        if (timer > 3)
+        if (timer > destroyDelay)
         {
             Destroy(this.gameObject);
         }
+    }
+
+    public float GetSpeed()
+    {
+        return speed;
+    }
+
+    public void SetSpeed(float speed)
+    {
+        this.speed = speed;
     }
 
     public float GetDamage()
@@ -35,9 +47,19 @@ public class Projectile : MonoBehaviour
         this.damage = damage;
     }
 
+    public void setDestroyDelay(float destroyDelay)
+    {
+        this.destroyDelay = destroyDelay;
+    }
+
+    public void enableDestroyOnHit(bool enable)
+    {
+        destroyOnHit = enable;
+    }
+
     public void OnTriggerEnter(Collider other)
     {
-        if (other.tag != "Projectile")
+        if (other.tag != "Projectile" && destroyOnHit == true)
         {
            Destroy(this.gameObject);
         }      

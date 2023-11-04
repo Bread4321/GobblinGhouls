@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class SkeletonAI : MonoBehaviour
+public class SkeletonAI: MonoBehaviour
 {
     private float timer = 0f;
+    private float attackDelay = 3f;
+    public GameObject weapon;
+    public GameObject ShootSpot;
     public NavMeshAgent enemy;
     GameObject player;
     // Start is called before the first frame update
@@ -20,6 +23,7 @@ public class SkeletonAI : MonoBehaviour
     {
 
         timer += Time.deltaTime;
+        attackDelay += Time.deltaTime;
 
         int randomBehaviour = 0;
 
@@ -31,9 +35,12 @@ public class SkeletonAI : MonoBehaviour
             timer = 0;
         }
 
-        if (distanceFromPlayer < 2.0f && timer > 4f)
+        if (distanceFromPlayer < 2.0f && attackDelay > 4f)
         {
-            Debug.Log("attacks");
+            GameObject attack = Instantiate(weapon, new Vector3(ShootSpot.transform.position.x, ShootSpot.transform.position.y, ShootSpot.transform.position.z), ShootSpot.transform.rotation, this.transform);
+            attack.GetComponent<Projectile>().SetSpeed(0f);
+            attack.GetComponent<Projectile>().enableDestroyOnHit(false);
+            attackDelay = 0f;
         }
 
         if (randomBehaviour == 1)
