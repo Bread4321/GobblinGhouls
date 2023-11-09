@@ -22,16 +22,27 @@ public class ItemManager : MonoBehaviour
     public GameObject itemUpgrades;
     public GameObject weaponUpgrades;
 
-    private void Awake()
-    {
-        DontDestroyOnLoad(this.gameObject);
-    }
 
     private void Start()
     {
-        randomIndex = Random.Range(0, weaponList.Length);
-        currentWeapon = weaponList[randomIndex];
-        Debug.Log("Current Weapon: " + currentWeapon + " Level: " + level);
+        if (instance != null)
+        {
+            Destroy(GameObject);
+        } else
+        {
+            instance = this;
+        }
+        DontDestroyOnLoad(this.gameObject);
+
+        if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            Debug.Log("Randomized Weapon");
+            randomIndex = Random.Range(0, weaponList.Length);
+            currentWeapon = weaponList[randomIndex];
+            Debug.Log("Current Weapon: " + currentWeapon + " Level: " + level);
+        }
+        isLoaded = false;
+
     }
 
     void Update()
@@ -65,6 +76,7 @@ public class ItemManager : MonoBehaviour
 
             if (weaponUpgrades.activeInHierarchy && isLoaded == false)
             {
+                Debug.Log(currentWeapon);
                 int slotIndex = 0;
                 for (int i = 0; i < weaponList.Length; i++)
                 {
@@ -111,7 +123,7 @@ public class ItemManager : MonoBehaviour
         level = 1;
         Debug.Log(currentWeapon + level);
         SceneManager.LoadScene(stageIndex + 1);
-        isLoaded = false;
+        // isLoaded = false;
     }
 
     public void UpgradeWeapon()
@@ -119,7 +131,7 @@ public class ItemManager : MonoBehaviour
         level++;
         Debug.Log("Current Weapon: " + currentWeapon + " Level: " + level);
         SceneManager.LoadScene(stageIndex + 1);
-        isLoaded = false;
+        // isLoaded = false;
     }
 
     public string GetCurrentWeapon()
