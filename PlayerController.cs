@@ -1,58 +1,63 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    public float health = 0;
-    private float tempHealth;
+    public float maxHealth = 100;
+    private float health;
     public float speed = 1.0f;
     public float timeDelay = 1f;
-    public float damage = 0;
     public float numProjectiles = 1f;
-    public GameObject Weapon;
+    public GameObject weapon;
     private float timer = 0f;
     public GameObject ShootSpot;
     GameObject enemy;
-    // Start is called before the first frame update
+    public Collider currentTrigger = null;
+    public ItemManager itemManager;
+
+    
     void Start()
     {
-        tempHealth = health;
+        health = maxHealth;
         timer = timeDelay;
         enemy = GameObject.FindWithTag("Enemy");
-        
+        itemManager = (ItemManager)GameObject.Find("Item Manager").GetComponent("ItemManager");
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
+        if (currentTrigger != null)
         {
-            if (tempHealth <= 0)
+            if (Input.GetButtonDown("Interact"))
             {
-                Destroy(this.gameObject);
+                if (currentTrigger.gameObject.name == "EndLevel")
+                {
+                    StartCoroutine(EndLevel());
+                }
             }
-
         }
+
+        
+        if (health <= 0)
+        {
+            Debug.Log("probably dead but note that I should send you to a game over screen");
+        }
+
+        
         transform.Translate(Vector3.forward * Input.GetAxis("Vertical") * Time.deltaTime * speed);
         transform.Translate(Vector3.right * Input.GetAxis("Horizontal") * Time.deltaTime * speed);
 
         timer += Time.deltaTime;
         // the thing that does the shooting
-        if (Input.GetAxis("Fire1") == 1.0f && timer > timeDelay)
+        if (Input.GetAxis("Fire") == 1.0f && timer > timeDelay)
         {
+           
             Invoke("Fire", 0);
             timer = 0;
         }
-    }
-
-    public float GetDamage()
-    {
-        return damage;
-    }
-
-    public void setDamage(float newDamage)
-    {
-        damage = newDamage;
     }
 
     public float getProjectileCount()
@@ -77,9 +82,14 @@ public class PlayerController : MonoBehaviour
 
     private void Fire()
     {
+        weapon = (GameObject)Resources.Load(itemManager.GetCurrentWeapon() + "Model");
+        
+
         if (numProjectiles == 1)
         {
-            Instantiate(Weapon, ShootSpot.transform.position, ShootSpot.transform.rotation);
+            GameObject projectile = Instantiate(weapon, ShootSpot.transform.position, ShootSpot.transform.rotation);
+            projectile.GetComponent<Projectile>().SetDamage(itemManager.GetDamage());
+            
         }
         else
         {
@@ -90,17 +100,40 @@ public class PlayerController : MonoBehaviour
                 Vector3 position = ShootSpot.transform.position + direction;
 
                 Quaternion spawnRotation = Quaternion.LookRotation(position - ShootSpot.transform.position);
-                Instantiate(Weapon, position, spawnRotation);
+                GameObject projectile = Instantiate(weapon, position, spawnRotation);
+                projectile.GetComponent<Projectile>().SetDamage(itemManager.GetDamage());
             }
         }
     }
 
-    private void onTriggerEnter(Collider other)
+    private IEnumerator EndLevel()
     {
-        if (other.tag == "Projectile")
+        currentTrigger.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadScene("Upgrades");
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Projectile")
         {
-            health -= (enemy.GetComponent<EnemyBase>().GetDamage());
-            Debug.Log(health);
+            health -= (collision.gameObject.GetComponent<Projectile>().GetDamage());
+            Debug.Log(health + "/" + maxHealth);
         }
+    }
+
+    private void OnTriggerExit(Collider collider)
+    {
+        currentTrigger = null;
+    }
+    private void OnTriggerStay(Collider collider)
+    {
+        currentTrigger = collider;
+    }
+
+    public void LoseHealth(int num)
+    {
+        health -= num;
+        Debug.Log(health + "/" + maxHealth);
     }
 }

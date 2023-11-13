@@ -5,15 +5,16 @@ using UnityEngine;
 public class EnemyBase : MonoBehaviour
 {
     public float Health = 0;
-    public float damage = 0;
     GameObject player;
-    // Start is called before the first frame update
+    private ParticleSystem effect;
+    
     void Start()
     {
         player = GameObject.FindWithTag("Player");
+        effect = gameObject.GetComponent<ParticleSystem>();
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         if (Health <= 0)
@@ -23,22 +24,23 @@ public class EnemyBase : MonoBehaviour
 
     }
 
-    public float GetDamage()
+    public float GetHealth()
     {
-        return damage;
+        return Health;
     }
 
-    public void setDamage(float newDamage)
+    public void SetHealth(float value)
     {
-        damage = newDamage;
+        Health = value;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.tag == "Projectile")
+        if (collision.gameObject.tag == "Projectile")
         {
-            Health -= (player.GetComponent<PlayerController>().GetDamage());
+            Health -= (collision.gameObject.GetComponent<Projectile>().GetDamage());
             Debug.Log(Health);
+            effect.Play();
         }
     }
 }
