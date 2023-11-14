@@ -11,38 +11,33 @@ public class ItemManager : MonoBehaviour
                                   "Lucky Feather", "Pumpkin Pie", "Apple Pie", "Bustling Fungus" };
 
 
-    private string currentWeapon;
-    private int level = 1;
-    private int[] items = {0, 0, 0, 0, 0, 0, 0, 0};
+    public string currentWeapon;
+    public int level = 1;
+    public int[] items = {0, 0, 0, 0, 0, 0, 0, 0};
 
     private int randomIndex;
     private int stageIndex = 0;
     private bool isLoaded = false;
 
+    
     public GameObject itemUpgrades;
     public GameObject weaponUpgrades;
+    
+    private bool foundGameObjects = false;
 
 
     private void Start()
     {
-        if (instance != null)
-        {
-            Destroy(GameObject);
-        } else
-        {
-            instance = this;
-        }
         DontDestroyOnLoad(this.gameObject);
 
         if (SceneManager.GetActiveScene().buildIndex == 0)
         {
-            Debug.Log("Randomized Weapon");
             randomIndex = Random.Range(0, weaponList.Length);
             currentWeapon = weaponList[randomIndex];
             Debug.Log("Current Weapon: " + currentWeapon + " Level: " + level);
         }
         isLoaded = false;
-
+        foundGameObjects = false;
     }
 
     void Update()
@@ -54,6 +49,16 @@ public class ItemManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
 
+            if (foundGameObjects == false)
+            {
+                itemUpgrades = GameObject.Find("ItemUpgrades");
+                weaponUpgrades = GameObject.Find("WeaponUpgrades");
+                weaponUpgrades.SetActive(false);
+                foundGameObjects = true;
+            }
+
+            
+            
             if (itemUpgrades.activeInHierarchy && isLoaded == false)
             {
                 string[] itemListClone = (string[])itemList.Clone();
@@ -76,13 +81,13 @@ public class ItemManager : MonoBehaviour
 
             if (weaponUpgrades.activeInHierarchy && isLoaded == false)
             {
-                Debug.Log(currentWeapon);
                 int slotIndex = 0;
                 for (int i = 0; i < weaponList.Length; i++)
                 {
                     if (currentWeapon != weaponList[i])
                     {
                         GameObject slot = GameObject.Find("Weapon" + slotIndex);
+                        Debug.Log("Trying to put " + currentWeapon + " in slot: " + slot);
                         GameObject prefabClone = (GameObject) Instantiate(Resources.Load(weaponList[i]), slot.transform);
                         prefabClone.name = weaponList[i];
                         slotIndex++;
@@ -111,9 +116,10 @@ public class ItemManager : MonoBehaviour
                 Debug.Log("An item was added");
             }
         }
-        itemUpgrades.SetActive(false);
+        itemUpgrades.SetActive(false); 
         weaponUpgrades.SetActive(true);
         isLoaded = false;
+        Debug.Log("finished additem method");
     }
     
     public void ChangeWeapon()
@@ -123,7 +129,7 @@ public class ItemManager : MonoBehaviour
         level = 1;
         Debug.Log(currentWeapon + level);
         SceneManager.LoadScene(stageIndex + 1);
-        // isLoaded = false;
+
     }
 
     public void UpgradeWeapon()
@@ -131,7 +137,6 @@ public class ItemManager : MonoBehaviour
         level++;
         Debug.Log("Current Weapon: " + currentWeapon + " Level: " + level);
         SceneManager.LoadScene(stageIndex + 1);
-        // isLoaded = false;
     }
 
     public string GetCurrentWeapon()
