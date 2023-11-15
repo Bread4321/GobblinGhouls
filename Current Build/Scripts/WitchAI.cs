@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class WitchAI : MonoBehaviour
+public class WitchAI: MonoBehaviour
 {
     private float timer = 0f;
     private float attackDelay = 0f;
@@ -57,6 +57,7 @@ public class WitchAI : MonoBehaviour
 
     public void Attack()
     {
-        Instantiate(weapon, new Vector3(ShootSpot.transform.position.x, ShootSpot.transform.position.y, ShootSpot.transform.position.z), ShootSpot.transform.rotation);
+        GameObject shot = Instantiate(weapon, new Vector3(ShootSpot.transform.position.x, ShootSpot.transform.position.y, ShootSpot.transform.position.z), ShootSpot.transform.rotation);
+        shot.GetComponent<Projectile>().setIsEnemy(true);
     }
 }

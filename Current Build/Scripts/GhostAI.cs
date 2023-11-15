@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GhostAI : MonoBehaviour
+public class GhostAI: MonoBehaviour
 {
     private float timer = 0f;
     public UnityEngine.AI.NavMeshAgent enemy;

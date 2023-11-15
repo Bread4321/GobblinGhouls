@@ -11,7 +11,6 @@ public class GargoyleAI: MonoBehaviour
 
     // various prefabs and components used for attacks
     public GameObject weapon1;
-    public GameObject weapon2;
     public GameObject attackCast;
     public GameObject ShootSpot;
     public GameObject SummonTarget;
@@ -41,6 +40,11 @@ public class GargoyleAI: MonoBehaviour
         player = GameObject.FindWithTag("Player"); 
     }
 
+    void Awake()
+    {
+        player = GameObject.FindWithTag("Player");
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -66,7 +70,7 @@ public class GargoyleAI: MonoBehaviour
         if (timer >= behaviourDelay && behaviourCount <= 5 && busy == 1)
         {
             // Will randomly select one of the 5 behaviours for the boss
-            randomBehaviour = (int)Random.Range(1f, 5f);
+            randomBehaviour = (int)Random.Range(2f, 3f);
             // Will random choose the delay between each behaviour
             behaviourDelay = (int)Random.Range(2f, 5f);
             behaviourCount++;
@@ -79,7 +83,7 @@ public class GargoyleAI: MonoBehaviour
             {
                 case 1:
                     // shoots fireballs at player
-                    behaviour = Behaviour1(1f, 3);
+                    behaviour = Behaviour1(0.5f, 3);
                     StartCoroutine(behaviour);
                     break;
 
@@ -121,7 +125,7 @@ public class GargoyleAI: MonoBehaviour
 
         // this part shoots the fireball
         GameObject projectile = Instantiate(weapon1, new Vector3(ShootSpot.transform.position.x, ShootSpot.transform.position.y, ShootSpot.transform.position.z), ShootSpot.transform.rotation);
-        projectile.GetComponent<Projectile>().SetSpeed(20f);
+        projectile.GetComponent<Projectile>().SetSpeed(40f);
         projectile.GetComponent<Projectile>().setDestroyDelay(2f);
         projectile.transform.LookAt(new Vector3(x, 1f, z));
 
@@ -178,7 +182,8 @@ public class GargoyleAI: MonoBehaviour
         // returns the speed to normal and shoots a quick fireball
         //his.transform.LookAt(new Vector3(player.transform.position.x, this.transform.position.y, player.transform.position.z)); He should turn to face the player after the charge but it doesn't work right now
         enemy.speed = 2f;
-        enemy.acceleration = initialAcceleration;       
+        enemy.acceleration = initialAcceleration;
+        enemy.isStopped = true;
         behaviour = Behaviour1(0.5f, 1);
         StartCoroutine(behaviour);
     }
@@ -193,16 +198,27 @@ public class GargoyleAI: MonoBehaviour
 
         for (int i = 0; i < numOfProjectiles; i++) 
         {
-            x[i] = player.transform.position.x + Random.Range(-5f, 5f);
-            y[i] = player.transform.position.y + Random.Range(2f, 5f);
-            z[i] = player.transform.position.z + Random.Range(-5f, 5f);
+
+            if (i == 0) // always ensures one fireball is sent to the players most recent location
+            {
+                x[i] = player.transform.position.x;
+                y[i] = player.transform.position.y;
+                z[i] = player.transform.position.z;
+            } 
+            else // these are random set around the player 
+            {
+                x[i] = player.transform.position.x + Random.Range(-5f, 5f);
+                y[i] = player.transform.position.y + Random.Range(2f, 5f);
+                z[i] = player.transform.position.z + Random.Range(-5f, 5f);
+            }
+            
             Instantiate(attackCast, new Vector3(x[i], 0f, z[i]), this.transform.rotation);
             attackCast.GetComponent<DestroyObject>().setTimer(delay + 1f);
         }
         
         yield return new WaitForSeconds(delay);
 
-        for (int i = 0;i < numOfProjectiles; i++) 
+        for (int i = 0; i < numOfProjectiles; i++) 
         { 
             GameObject projectile = Instantiate(weapon1, new Vector3(x[i], y[i] + 5f, z[i]), new Quaternion(-0.707f, 0, 0, -0.707f));
             projectile.GetComponent<Projectile>().SetSpeed(10f);

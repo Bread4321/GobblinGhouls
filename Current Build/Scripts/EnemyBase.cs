@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBase : MonoBehaviour
+public class EnemyBase: MonoBehaviour
 {
     public float Health = 0;
     GameObject player;
@@ -36,8 +36,10 @@ public class EnemyBase : MonoBehaviour
     {
         if (other.tag == "Projectile")
         {
+            if (other.GetComponent<Projectile>().getIsEnemy() == false)
             Health -= (other.GetComponent<Projectile>().GetDamage());
             Debug.Log(Health);
-        }
+
+        }       
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MagicSkeletonAI: MonoBehaviour
+public class MagicSkeletonAI : MonoBehaviour
 {
     private float timer = 0f;
     private float attackDelay = 0f;

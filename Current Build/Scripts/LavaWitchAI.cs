@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class LavaWitchAI: MonoBehaviour
+public class LavaWitchAI : MonoBehaviour
 {
     private float timer = 0f;
     private float attackDelay = 3f;
