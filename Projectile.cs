@@ -5,7 +5,7 @@ using UnityEngine;
 public class Projectile: MonoBehaviour
 {
     public float speed;
-    public float damage = 0;
+    public int damage = 10;
     private float timer = 0;
     public float destroyDelay = 3f;
     public bool destroyOnHit = true;
@@ -38,12 +38,12 @@ public class Projectile: MonoBehaviour
         this.speed = speed;
     }
 
-    public float GetDamage()
+    public int GetDamage()
     {
         return damage;
     }
 
-    public void SetDamage(float damage)
+    public void SetDamage(int damage)
     {
         this.damage = damage;
     }
@@ -67,6 +67,7 @@ public class Projectile: MonoBehaviour
         }      
     }
     */
+    /*
     private void OnCollisionEnter(Collision collision)
     {
         if (destroyOnHit)
@@ -74,4 +75,7 @@ public class Projectile: MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+    */
+
+    
 }

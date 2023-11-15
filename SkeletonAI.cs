@@ -5,37 +5,69 @@ using UnityEngine.AI;
 
 public class SkeletonAI: MonoBehaviour
 {
-    private float timer = 0f;
+    public int health = 10;
+    // private float timer = 0f;
     private float attackTimer = 0f;
-    public float attackSpeed = 2f;
+    private float animationTimer = 0f;
+    public float attackSpeed = 3f;
     // public GameObject weapon;
     // public GameObject ShootSpot;
+    public Animator anim;
     private GameObject player;
     private NavMeshAgent enemy;
+    public float speed = 5;
     
     void Start()
     {
         player = GameObject.FindWithTag("Player");
         enemy = GetComponent<NavMeshAgent>();
-        enemy.SetDestination(player.transform.position);
+        enemy.speed = speed;
     }
 
     
     void Update()
     {
-
-        timer += Time.deltaTime;
         attackTimer += Time.deltaTime;
+        animationTimer += Time.deltaTime;
 
-        int randomBehaviour = 0;
+        if (health <= 0)
+        {
+            StartCoroutine("skeletonDeath");
+            
+            
+        } else
+        {
+            float distanceFromPlayer = Vector3.Distance(this.transform.position, player.transform.position);
 
-        // float distanceFromPlayer = Vector3.Distance(this.transform.position, player.transform.position);
+            if (distanceFromPlayer > 3)
+            {
+                enemy.SetDestination(player.transform.position);
+                anim.Play("Walk");
+            }
+            else
+            {
+                if (attackTimer >= attackSpeed)
+                {
+                    anim.Play("Attack01");
+                    player.GetComponent<PlayerController>().LoseHealth(10);
+                    attackTimer = 0f;
+                }
+            }
+        }
 
+        // timer += Time.deltaTime;
+        
+
+        // int randomBehaviour = 0;
+
+       
+        /*
         if (timer >= 3)
         {
             randomBehaviour = (int)Random.Range(1f, 7f);
             timer = 0;
         }
+        */
 
         /*
         if (distanceFromPlayer < 2.0f && attackDelay > 4f)
@@ -46,7 +78,7 @@ public class SkeletonAI: MonoBehaviour
             attackDelay = 0f;
         }
         */
-
+        /*
         if (randomBehaviour == 1)
         {
             //Debug.Log("behaviour left move");
@@ -81,14 +113,62 @@ public class SkeletonAI: MonoBehaviour
         {
             enemy.SetDestination(player.transform.position);
         }
+        */
     }
 
+    public int GetHealth()
+    {
+        return health;
+    }
+
+    public void SetHealth(int value)
+    {
+        health = value;
+    }
+
+    private IEnumerator skeletonDeath()
+    {
+        enemy.velocity = new Vector3(0, 0, 0);
+        anim.Play("Death01");
+        yield return new WaitForSeconds(2);
+        Destroy(this.gameObject);
+    }
+    /*
     private void OnTriggerStay(Collider other)
     {
         if (attackTimer >= attackSpeed)
         {
+            anim.SetInteger("i", 1);
             player.GetComponent<PlayerController>().LoseHealth(10);
             attackTimer = 0f;
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        enemy.SetDestination(player.transform.position);
+        anim.SetInteger("i", 0);
+
+    }
+    */
+    /*
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Projectile")
+        {
+            health -= (int) (collision.gameObject.GetComponent<Projectile>().GetDamage());
+            anim.SetInteger("i", 2);
+            
+        }
+    }
+    */
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Projectile projectile = (Projectile) other.gameObject.GetComponent<Projectile>();
+        health -= projectile.GetDamage();
+        Debug.Log("Skeleton Health: " + health);
+        anim.Play("Damage01");
+        Destroy(other.gameObject);
     }
 }
